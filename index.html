@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Write that down</title>
+	
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=Sen:400,700&amp;display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+	<div id="noteWrap">
+		<div id="toolsWrap">
+			<div id="fontSize" data-tag="span" onclick="spanForFontSize(event)">
+				<i class="fas fa-font"></i>
+				<input type="number" value="14" min="7" max="30" onchange="fontSize(event)">
+			</div>
+			<div id="bold" data-tag="strong" onclick="formatText(event)">
+				<i class="fas fa-bold"></i>
+			</div>
+			<div id="italic" data-tag="em" onclick="formatText(event)">
+				<i class="fas fa-italic"></i>
+			</div>
+			<div id="underline" data-tag="u" onclick="formatText(event)">
+				<i class="fas fa-underline"></i>
+			</div>
+			<div id="strikethrough" data-tag="s" onclick="formatText(event)">
+				<i class="fas fa-strikethrough"></i>
+			</div>
+		</div>
+		<div id="note" contenteditable>Make notes here...</div>
+		<div id="taskbar">
+			<div id="status">
+				Last saved: 
+			</div>
+			<div id="export" onclick="exportContent(new Date().toDateString() + '.txt', 'text/plain;charset=utf-8')">
+				Export
+			</div>
+		</div>
+	</div>
+	
+	<script src="app.js"></script>
+</body>
+</html>
