@@ -1,5 +1,10 @@
-document {}
-html, body {/*width: 500px; height: 500px;*/ background-color: #35363a; font-family: Sen, Arial, sans-serif;}
+/*::selection {color: #fff; background: #383838;}*/
+::-webkit-scrollbar {width: 10px; background-color: #f8f6f8;}
+::-webkit-scrollbar-track {background-color: transparent!important;}
+::-webkit-scrollbar-track-piece {background-color: transparent!important;}
+::-webkit-scrollbar-thumb {border-radius: 10px; background-color: #dbdbdb;}
+
+html, body {width: 500px; height: 500px; overflow: hidden; background-color: #35363a; font-family: Sen, Arial, sans-serif;}
 
 #noteWrap {border: 1px solid #eee; position: relative; width: 500px; height: 500px; background-color: #f3f3f3}
 
@@ -12,9 +17,9 @@ html, body {/*width: 500px; height: 500px;*/ background-color: #35363a; font-fam
 #toolsWrap #fontSize.show {pointer-events: none;}
 #toolsWrap #fontSize.show input {display: inline-block; pointer-events: all}
 
-#note {height: calc(500px - 70px); width: calc(500px - 30px); padding: 55px 15px 15px; font-size: 14px;}
+#note {height: calc(500px - 70px); width: calc(500px - 30px); overflow-y: scroll; padding: 55px 15px 15px; font-size: 14px;}
 #note:focus {outline: none;}
 
-#taskbar {position: absolute; bottom: 0; left: 0; width: calc(100% - 20px); padding: 10px; font-size: 12px; color: #ccc; display: flex; justify-content: space-between; align-items: center}
-#taskbar #status {opacity: 0;}
-#taskbar #export {color: #383838; cursor: pointer; border: 1px solid #ddd; padding: 4px 10px; border-radius: 4px;}
+#taskbar {position: absolute; bottom: 0; left: 0; width: calc(100% - 20px); padding: 20px 0; font-size: 12px; color: #ccc; display: flex; justify-content: space-between; align-items: center}
+#taskbar #status {opacity: 0; color: #383838; padding: 4px 10px; border-radius: 4px; background-color: #f3f3f3}
+#taskbar #export {color: #383838; cursor: pointer; border: 1px solid #ddd; padding: 4px 10px; border-radius: 4px; background-color: #f3f3f3}
