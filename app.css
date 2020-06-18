@@ -21,5 +21,6 @@ html, body {width: 500px; height: 500px; overflow: hidden; background-color: #35
 #note:focus {outline: none;}
 
 #taskbar {position: absolute; bottom: 0; left: 0; width: calc(100% - 20px); padding: 20px 0; font-size: 12px; color: #ccc; display: flex; justify-content: space-between; align-items: center}
-#taskbar #status {opacity: 0; color: #383838; padding: 4px 10px; border-radius: 4px; background-color: #f3f3f3}
+#taskbar #status {opacity: 0; color: #383838; padding: 4px 10px; border-radius: 4px; background-color: #f3f3f3; margin-left: 10px;}
+#taskbar #status.show {opacity: 1}
 #taskbar #export {color: #383838; cursor: pointer; border: 1px solid #ddd; padding: 4px 10px; border-radius: 4px; background-color: #f3f3f3}

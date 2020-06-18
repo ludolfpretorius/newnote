@@ -1,5 +1,6 @@
 const note = document.querySelector('#note')
 const font = document.querySelector('#fontSize')
+const status = document.querySelector('#status')
 
 let bold
 let italic
@@ -11,6 +12,8 @@ let noteData = {}
 String.prototype.splice = function(start, delCount, newSubStr) {
     return this.slice(0, start) + newSubStr + this.slice(start + Math.abs(delCount));
 }
+
+// load()
 
 function getSelectedText() {
     if (window.getSelection()) {
@@ -39,23 +42,25 @@ note.onclick = () => {
 
 function formatText() {
     const target = event.currentTarget
+    let sel
     try {
-        if (noteData.element === bold || noteData.element === italic || noteData.element === underline || noteData.element === strikethrough || noteData.element === noteData.lastFormat) {
+        if (noteData.element === bold || noteData.element === italic || noteData.element === underline || noteData.element === strikethrough) {
             const el = noteData.element
             const parent = el.parentNode
             while (el.firstChild) parent.insertBefore(el.firstChild, el)
             el ? parent.removeChild(el) : ''
             noteData.lastFormat = ''
-        } else if (noteData.element === note) {
-            const el = document.createElement(target.getAttribute('data-tag'))
-            noteData.selection.surroundContents(el)
-            if (noteData.selection) {
-                sel = window.getSelection()
-                sel.removeAllRanges()
-                sel.addRange(noteData.selection)
-                noteData.element = el
-            }
-        }
+        } 
+        // else if (noteData.element === note) {
+        //     const el = document.createElement(target.getAttribute('data-tag'))
+        //     noteData.selection.surroundContents(el)
+        //     if (noteData.selection) {
+        //         sel = window.getSelection()
+        //         sel.removeAllRanges()
+        //         sel.addRange(noteData.selection)
+        //         noteData.element = el
+        //     }
+        // }
     } catch(e) {
         alert('Formatting mixed content e.g. a selection of both bold and regular text, doesn\'t work yet. Updates are coming, but for now, please try and avoid formatting mixed content 😅')
         console.error('Formatting mixed content e.g. a selection of both bold and regular text, doesn\'t work yet. Updates are coming, but for now, please try and avoid formatting mixed content 😅')
@@ -69,6 +74,12 @@ function spanForFontSize() {
             const el = document.createElement('span')
             el.id = 'focus'
             noteData.selection.surroundContents(el)
+            if (noteData.selection) {
+                sel = window.getSelection()
+                sel.removeAllRanges()
+                sel.addRange(noteData.selection)
+                noteData.element = el
+            }
         }
     } catch(e) {
         alert('Formatting mixed content e.g. a selection of both bold and regular text, doesn\'t work yet. Updates are coming, but for now, please try and avoid formatting mixed content 😅')
@@ -80,6 +91,12 @@ function spanForFontSize() {
 function fontSize() {
     const focus = document.querySelector('#focus')
     focus.style.fontSize = event.currentTarget.value + 'px'
+    if (noteData.selection) {
+        sel = window.getSelection()
+        sel.removeAllRanges()
+        sel.addRange(noteData.selection)
+        noteData.element = el
+    }
 }
 
 function exportContent(filename, type) {
@@ -95,4 +112,26 @@ function exportContent(filename, type) {
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);  
     }, 0); 
+}
+
+function autoSave() {
+    let old
+    setInterval(() => {
+      if (note.innerHTML !== old) {
+        save()
+      }
+      old = note.innerHTML
+    }, 3000)
+}
+// autoSave() 
+
+function save() {
+    chrome.storage.local.set({'myNotes': note.innerHTML}, () => {
+        status.classList.add('show')
+        setTimeout(() => status.classList.remove('show'), 1000)
+    })
+}
+
+function load() {
+    chrome.storage.local.get('myNotes') ? note.innerHTML = chrome.storage.local.get('myNotes') : ''
 }
