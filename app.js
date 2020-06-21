@@ -28,90 +28,102 @@ function getSelectedText() {
         noteData.rangeStart = window.getSelection().anchorOffset
         noteData.before = note.innerHTML.slice(0, window.getSelection().anchorOffset)
         noteData.after = note.innerHTML.slice(window.getSelection().focusOffset, -1)
+        noteData.lastFormat === null
+        noteData.fromOldSelection = false
     }
 }
 
 note.onmouseup = getSelectedText
 note.onkeyup = getSelectedText
-note.onclick = () => {
-    font.classList.remove('show')
-    document.querySelector('#focus') ? document.querySelector('#focus').id = '' : ''
-    font.querySelector('input').value = 14
-}
+// note.onclick = () => {
+//     font.classList.remove('show')
+//     document.querySelector('#focus') ? document.querySelector('#focus').id = '' : ''
+//     font.querySelector('input').value = 14
+// }
 
 
 function formatText() {
     const target = event.currentTarget
     let sel
     try {
-        if (noteData.element === bold || noteData.element === italic || noteData.element === underline || noteData.element === strikethrough) {
-            const el = noteData.element
+        if (noteData.lastFormat == null) {
+            const el = document.createElement(target.getAttribute('data-tag'))
+            el.id = 'focus'
+            noteData.selection.surroundContents(el)
+            noteData.lastFormat = el
+            if (noteData.selection) {
+                sel = window.getSelection()
+                const range = document.createRange()
+                range.selectNodeContents(el)
+                sel.removeAllRanges()         
+                sel.addRange(range)
+            }
+        } else {
+            const newEl = document.createElement('span')
+            noteData.selection.surroundContents(newEl)
+            const el = noteData.element === note ? noteData.element.querySelector('#focus') : noteData.element
             const parent = el.parentNode
             while (el.firstChild) parent.insertBefore(el.firstChild, el)
             el ? parent.removeChild(el) : ''
-            noteData.lastFormat = ''
-        } 
-        // else if (noteData.element === note) {
-        //     const el = document.createElement(target.getAttribute('data-tag'))
-        //     noteData.selection.surroundContents(el)
-        //     if (noteData.selection) {
-        //         sel = window.getSelection()
-        //         sel.removeAllRanges()
-        //         sel.addRange(noteData.selection)
-        //         noteData.element = el
-        //     }
-        // }
-    } catch(e) {
-        alert('Formatting mixed content e.g. a selection of both bold and regular text, doesn\'t work yet. Updates are coming, but for now, please try and avoid formatting mixed content 😅')
-        console.error('Formatting mixed content e.g. a selection of both bold and regular text, doesn\'t work yet. Updates are coming, but for now, please try and avoid formatting mixed content 😅')
-    }
-}
-
-function spanForFontSize() {
-    try {
-        event.currentTarget.classList.add('show')
-        if (!document.querySelector('#focus')) {
-            const el = document.createElement('span')
-            el.id = 'focus'
-            noteData.selection.surroundContents(el)
-            if (noteData.selection) {
-                sel = window.getSelection()
-                sel.removeAllRanges()
-                sel.addRange(noteData.selection)
-                noteData.element = el
-            }
+            el.id = ''
+            sel = window.getSelection()
+            const range = document.createRange()
+            range.selectNodeContents(newEl)
+            sel.removeAllRanges()         
+            sel.addRange(range)
+            noteData.lastFormat = null
         }
     } catch(e) {
         alert('Formatting mixed content e.g. a selection of both bold and regular text, doesn\'t work yet. Updates are coming, but for now, please try and avoid formatting mixed content 😅')
         console.error('Formatting mixed content e.g. a selection of both bold and regular text, doesn\'t work yet. Updates are coming, but for now, please try and avoid formatting mixed content 😅')
-        font.classList.remove('show')
     }
 }
 
-function fontSize() {
-    const focus = document.querySelector('#focus')
-    focus.style.fontSize = event.currentTarget.value + 'px'
-    if (noteData.selection) {
-        sel = window.getSelection()
-        sel.removeAllRanges()
-        sel.addRange(noteData.selection)
-        noteData.element = el
-    }
-}
+// function spanForFontSize() {
+//     try {
+//         event.currentTarget.classList.add('show')
+//         if (!document.querySelector('#focus')) {
+//             const el = document.createElement('span')
+//             el.id = 'focus'
+//             noteData.selection.surroundContents(el)
+//             if (noteData.selection) {
+//                 sel = window.getSelection()
+//                 sel.removeAllRanges()
+//                 sel.addRange(noteData.selection)
+//                 noteData.element = el
+//             }
+//         }
+//     } catch(e) {
+//         alert('Formatting mixed content e.g. a selection of both bold and regular text, doesn\'t work yet. Updates are coming, but for now, please try and avoid formatting mixed content 😅')
+//         console.error('Formatting mixed content e.g. a selection of both bold and regular text, doesn\'t work yet. Updates are coming, but for now, please try and avoid formatting mixed content 😅')
+//         font.classList.remove('show')
+//     }
+// }
+
+// function fontSize() {
+//     const focus = document.querySelector('#focus')
+//     focus.style.fontSize = event.currentTarget.value + 'px'
+//     if (noteData.selection) {
+//         sel = window.getSelection()
+//         sel.removeAllRanges()
+//         sel.addRange(noteData.selection)
+//         noteData.element = el
+//     }
+// }
 
 function exportContent(filename, type) {
     const data = note.innerText.replace(/\n\s*\n/g, '\n\n')
-    const file = new Blob([data], {type: type});
-    const a = document.createElement("a"),
-    url = URL.createObjectURL(file);
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(function() {
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);  
-    }, 0); 
+    const file = new Blob([data], {type: type})
+    const a = document.createElement("a")
+    const url = URL.createObjectURL(file)
+    a.href = url
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    setTimeout(() => {
+        document.body.removeChild(a)
+        window.URL.revokeObjectURL(url) 
+    }, 0)
 }
 
 function autoSave() {
