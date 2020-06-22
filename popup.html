@@ -16,30 +16,30 @@
 				<i class="fas fa-font"></i>
 				<input type="number" value="14" min="7" max="30" onchange="fontSize(event)">
 			</div> -->
-			<div id="bold" data-tag="strong" onclick="formatText(event)">
+			<a href="javascript:;" id="bold">
 				<i class="fas fa-bold"></i>
-			</div>
-			<div id="italic" data-tag="em" onclick="formatText(event)">
+			</a>
+			<a href="javascript:;" id="italic">
 				<i class="fas fa-italic"></i>
-			</div>
-			<div id="underline" data-tag="u" onclick="formatText(event)">
+			</a>
+			<a href="javascript:;" id="underline">
 				<i class="fas fa-underline"></i>
-			</div>
-			<div id="strikethrough" data-tag="s" onclick="formatText(event)">
+			</a>
+			<a href="javascript:;" id="strikethrough">
 				<i class="fas fa-strikethrough"></i>
-			</div>
+			</a>
 		</div>
 		<div id="note" contenteditable>Make notes here...</div>
 		<div id="taskbar">
 			<div id="status">
-				Successfully saved!
+				Saved successfully!
 			</div>
 			<div id="export" onclick="exportContent(new Date().toDateString() + '.txt', 'text/plain;charset=utf-8')">
 				Export
 			</div>
 		</div>
 	</div>
-	
+
 	<script src="app.js"></script>
 </body>
 </html>

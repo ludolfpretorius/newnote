@@ -1,11 +1,12 @@
+
 const note = document.querySelector('#note')
 const font = document.querySelector('#fontSize')
 const status = document.querySelector('#status')
 
-let bold
-let italic
-let underline
-let strikethrough
+const bold = document.querySelector('#bold')
+const italic = document.querySelector('#italic')
+const underline = document.querySelector('#underline')
+const strikethrough = document.querySelector('#strikethrough')
 
 let noteData = {}
 
@@ -13,71 +14,81 @@ String.prototype.splice = function(start, delCount, newSubStr) {
     return this.slice(0, start) + newSubStr + this.slice(start + Math.abs(delCount));
 }
 
-// load()
+load()
 
-function getSelectedText() {
-    if (window.getSelection()) {
-        bold = document.querySelector('strong')
-        italic = document.querySelector('em')
-        underline = document.querySelector('u')
-        strikethrough = document.querySelector('s')
+bold.addEventListener('click', () => document.execCommand('bold'))
+italic.addEventListener('click', () => document.execCommand('italic'))
+underline.addEventListener('click', () => document.execCommand('underline'))
+strikethrough.addEventListener('click', () => document.execCommand('strikethrough'))
 
-        noteData.selection = window.getSelection().getRangeAt(0)
-        noteData.text = window.getSelection().toString()
-        noteData.element = window.getSelection().anchorNode.parentNode
-        noteData.rangeStart = window.getSelection().anchorOffset
-        noteData.before = note.innerHTML.slice(0, window.getSelection().anchorOffset)
-        noteData.after = note.innerHTML.slice(window.getSelection().focusOffset, -1)
-        noteData.lastFormat === null
-        noteData.fromOldSelection = false
-    }
+function exportContent(filename, type) {
+    const data = note.innerText.replace(/\n\s*\n/g, '\n\n')
+    const file = new Blob([data], {type: type})
+    const a = document.createElement("a")
+    const url = URL.createObjectURL(file)
+    a.href = url
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    setTimeout(() => {
+        document.body.removeChild(a)
+        window.URL.revokeObjectURL(url) 
+    }, 0)
 }
 
-note.onmouseup = getSelectedText
-note.onkeyup = getSelectedText
-// note.onclick = () => {
-//     font.classList.remove('show')
-//     document.querySelector('#focus') ? document.querySelector('#focus').id = '' : ''
-//     font.querySelector('input').value = 14
+let busy
+const observer = new MutationObserver(function(mutations, observer) {
+    busy ? clearTimeout(busy) : ''
+    busy = setTimeout(() => save(), 1000) 
+});
+const config = { attributes: true, childList: true, characterData: true, subtree: true };
+observer.observe(note, config);
+
+function save() {
+    chrome.storage.local.set({'myNotes': note.innerHTML}, () => {
+        status.classList.add('show')
+        setTimeout(() => status.classList.remove('show'), 2000)
+    })
+}
+
+function load() {
+    chrome.storage.local.get((data) => {
+        data.myNotes ? note.innerHTML = data.myNotes : ''
+    })
+}
+
+
+
+
+
+
+
+
+// function getSelectedText() {
+//     if (window.getSelection() && window.getSelection().anchorOffset < window.getSelection().focusOffset) {
+//         bold = document.querySelector('b')
+//         italic = document.querySelector('i')
+//         underline = document.querySelector('u')
+//         strikethrough = document.querySelector('s')
+
+//         noteData.selection = window.getSelection().getRangeAt(0)
+//         noteData.text = window.getSelection().toString()
+//         noteData.element = window.getSelection().anchorNode.parentNode
+//         noteData.rangeStart = window.getSelection().anchorOffset
+//         noteData.rangeEnd = window.getSelection().focusOffset
+//         noteData.before = note.innerHTML.slice(0, window.getSelection().anchorOffset)
+//         noteData.after = note.innerHTML.slice(window.getSelection().focusOffset, -1)
+//         noteData.lastFormat === null
+//         noteData.fromOldSelection = false
+//     } else if (window.getSelection() && window.getSelection().anchorOffset < window.getSelection().focusOffset) {
+//         console.log(window.getSelection().anchorOffset)
+//         console.log(window.getSelection().focusOffset)
+//         window.getSelection().empty()
+//     }
 // }
 
-
-function formatText() {
-    const target = event.currentTarget
-    let sel
-    try {
-        if (noteData.lastFormat == null) {
-            const el = document.createElement(target.getAttribute('data-tag'))
-            el.id = 'focus'
-            noteData.selection.surroundContents(el)
-            noteData.lastFormat = el
-            if (noteData.selection) {
-                sel = window.getSelection()
-                const range = document.createRange()
-                range.selectNodeContents(el)
-                sel.removeAllRanges()         
-                sel.addRange(range)
-            }
-        } else {
-            const newEl = document.createElement('span')
-            noteData.selection.surroundContents(newEl)
-            const el = noteData.element === note ? noteData.element.querySelector('#focus') : noteData.element
-            const parent = el.parentNode
-            while (el.firstChild) parent.insertBefore(el.firstChild, el)
-            el ? parent.removeChild(el) : ''
-            el.id = ''
-            sel = window.getSelection()
-            const range = document.createRange()
-            range.selectNodeContents(newEl)
-            sel.removeAllRanges()         
-            sel.addRange(range)
-            noteData.lastFormat = null
-        }
-    } catch(e) {
-        alert('Formatting mixed content e.g. a selection of both bold and regular text, doesn\'t work yet. Updates are coming, but for now, please try and avoid formatting mixed content 😅')
-        console.error('Formatting mixed content e.g. a selection of both bold and regular text, doesn\'t work yet. Updates are coming, but for now, please try and avoid formatting mixed content 😅')
-    }
-}
+// note.onmouseup = getSelectedText
+// note.onkeyup = getSelectedText
 
 // function spanForFontSize() {
 //     try {
@@ -110,40 +121,3 @@ function formatText() {
 //         noteData.element = el
 //     }
 // }
-
-function exportContent(filename, type) {
-    const data = note.innerText.replace(/\n\s*\n/g, '\n\n')
-    const file = new Blob([data], {type: type})
-    const a = document.createElement("a")
-    const url = URL.createObjectURL(file)
-    a.href = url
-    a.download = filename
-    document.body.appendChild(a)
-    a.click()
-    setTimeout(() => {
-        document.body.removeChild(a)
-        window.URL.revokeObjectURL(url) 
-    }, 0)
-}
-
-function autoSave() {
-    let old
-    setInterval(() => {
-      if (note.innerHTML !== old) {
-        save()
-      }
-      old = note.innerHTML
-    }, 3000)
-}
-// autoSave() 
-
-function save() {
-    chrome.storage.local.set({'myNotes': note.innerHTML}, () => {
-        status.classList.add('show')
-        setTimeout(() => status.classList.remove('show'), 1000)
-    })
-}
-
-function load() {
-    chrome.storage.local.get('myNotes') ? note.innerHTML = chrome.storage.local.get('myNotes') : ''
-}
