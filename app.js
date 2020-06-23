@@ -2,6 +2,7 @@
 const note = document.querySelector('#note')
 const font = document.querySelector('#fontSize')
 const status = document.querySelector('#status')
+const exportBtn = document.querySelector('#export')
 
 const bold = document.querySelector('#bold')
 const italic = document.querySelector('#italic')
@@ -9,10 +10,7 @@ const underline = document.querySelector('#underline')
 const strikethrough = document.querySelector('#strikethrough')
 
 let noteData = {}
-
-String.prototype.splice = function(start, delCount, newSubStr) {
-    return this.slice(0, start) + newSubStr + this.slice(start + Math.abs(delCount));
-}
+let firstLoad = true
 
 load()
 
@@ -20,6 +18,7 @@ bold.addEventListener('click', () => document.execCommand('bold'))
 italic.addEventListener('click', () => document.execCommand('italic'))
 underline.addEventListener('click', () => document.execCommand('underline'))
 strikethrough.addEventListener('click', () => document.execCommand('strikethrough'))
+exportBtn.addEventListener('click', () => exportContent(new Date().toDateString() + '.txt', 'text/plain;charset=utf-8'))
 
 function exportContent(filename, type) {
     const data = note.innerText.replace(/\n\s*\n/g, '\n\n')
@@ -37,9 +36,12 @@ function exportContent(filename, type) {
 }
 
 let busy
-const observer = new MutationObserver(function(mutations, observer) {
-    busy ? clearTimeout(busy) : ''
-    busy = setTimeout(() => save(), 1000) 
+const observer = new MutationObserver((mutations, observer) => {
+    if (firstLoad === false) {
+        busy ? clearTimeout(busy) : ''
+        busy = setTimeout(() => save(), 1000)
+    }
+    firstLoad = false
 });
 const config = { attributes: true, childList: true, characterData: true, subtree: true };
 observer.observe(note, config);
@@ -62,7 +64,9 @@ function load() {
 
 
 
-
+// String.prototype.splice = function(start, delCount, newSubStr) {
+//     return this.slice(0, start) + newSubStr + this.slice(start + Math.abs(delCount));
+// }
 
 // function getSelectedText() {
 //     if (window.getSelection() && window.getSelection().anchorOffset < window.getSelection().focusOffset) {
