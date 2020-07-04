@@ -1,6 +1,6 @@
 
 const note = document.querySelector('#note')
-const font = document.querySelector('#fontSize')
+// const font = document.querySelector('#fontSize')
 const status = document.querySelector('#status')
 const exportBtn = document.querySelector('#export')
 
@@ -8,6 +8,9 @@ const bold = document.querySelector('#bold')
 const italic = document.querySelector('#italic')
 const underline = document.querySelector('#underline')
 const strikethrough = document.querySelector('#strikethrough')
+const ol = document.querySelector('#ol')
+const ul = document.querySelector('#ul')
+const link = document.querySelector('#link')
 
 let noteData = {}
 let firstLoad = true
@@ -18,7 +21,21 @@ bold.addEventListener('click', () => document.execCommand('bold'))
 italic.addEventListener('click', () => document.execCommand('italic'))
 underline.addEventListener('click', () => document.execCommand('underline'))
 strikethrough.addEventListener('click', () => document.execCommand('strikethrough'))
+ol.addEventListener('click', () => document.execCommand('insertOrderedList'))
+ul.addEventListener('click', () => document.execCommand('insertUnorderedList'))
 exportBtn.addEventListener('click', () => exportContent(new Date().toDateString() + '.txt', 'text/plain;charset=utf-8'))
+function addLink() {
+    if (window.getSelection().anchorNode.parentNode.nodeName === 'DIV' || window.getSelection().anchorNode.parentNode.nodeName === 'LI' || window.getSelection().anchorNode.parentNode.nodeName === 'B' || window.getSelection().anchorNode.parentNode.nodeName === 'I' || window.getSelection().anchorNode.parentNode.nodeName === 'U' || window.getSelection().anchorNode.parentNode.nodeName === 'STRIKE') {
+        const linkURL = prompt('Enter a URL:', 'http://');
+        if (linkURL) {
+            document.execCommand('createlink', false, linkURL)
+        }
+    } else {
+        const node = window.getSelection().anchorNode.parentNode
+        node.replaceWith(...node.childNodes)
+    }
+}
+link.addEventListener('click', addLink)
 
 function exportContent(filename, type) {
     const data = note.innerText.replace(/\n\s*\n/g, '\n\n')
@@ -42,9 +59,15 @@ const observer = new MutationObserver((mutations, observer) => {
         busy = setTimeout(() => save(), 1000)
     }
     firstLoad = false
-});
-const config = { attributes: true, childList: true, characterData: true, subtree: true };
-observer.observe(note, config);
+})
+const config = { attributes: true, childList: true, characterData: true, subtree: true }
+observer.observe(note, config)
+note.addEventListener('input',() => {
+    const allLinks = document.querySelectorAll('a')
+    allLinks.forEach(a => {
+        a.setAttribute('onclick', "window.open('" + a.getAttribute('href') + "', '_blank')")
+    })
+})
 
 function save() {
     chrome.storage.local.set({'myNotes': note.innerHTML}, () => {
