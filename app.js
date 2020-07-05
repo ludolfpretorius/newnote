@@ -36,6 +36,12 @@ function addLink() {
     }
 }
 link.addEventListener('click', addLink)
+setTimeout(() => {
+    const allLinks = document.querySelectorAll('a')
+    allLinks.forEach(a => {
+        a.addEventListener('click', () => window.open(a.getAttribute('href'), '_blank'))
+    })
+}, 0)
 
 function exportContent(filename, type) {
     const data = note.innerText.replace(/\n\s*\n/g, '\n\n')
@@ -65,7 +71,7 @@ observer.observe(note, config)
 note.addEventListener('input',() => {
     const allLinks = document.querySelectorAll('a')
     allLinks.forEach(a => {
-        a.setAttribute('onclick', "window.open('" + a.getAttribute('href') + "', '_blank')")
+        a.addEventListener('click', () => window.open(a.getAttribute('href'), '_blank'))
     })
 })
 
