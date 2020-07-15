@@ -10,6 +10,8 @@ const underline = document.querySelector('#underline')
 const strikethrough = document.querySelector('#strikethrough')
 const ol = document.querySelector('#ol')
 const ul = document.querySelector('#ul')
+const indent = document.querySelector('#indent')
+const outdent = document.querySelector('#outdent')
 const link = document.querySelector('#link')
 
 let noteData = {}
@@ -24,6 +26,8 @@ strikethrough.addEventListener('click', () => document.execCommand('strikethroug
 ol.addEventListener('click', () => document.execCommand('insertOrderedList'))
 ul.addEventListener('click', () => document.execCommand('insertUnorderedList'))
 exportBtn.addEventListener('click', () => exportContent(new Date().toDateString() + '.txt', 'text/plain;charset=utf-8'))
+indent.addEventListener('click', () => document.execCommand("indent", true, null))
+outdent.addEventListener('click', () => document.execCommand("outdent", true, null))
 function addLink() {
     if (window.getSelection().anchorNode.parentNode.nodeName === 'DIV' || window.getSelection().anchorNode.parentNode.nodeName === 'LI' || window.getSelection().anchorNode.parentNode.nodeName === 'B' || window.getSelection().anchorNode.parentNode.nodeName === 'I' || window.getSelection().anchorNode.parentNode.nodeName === 'U' || window.getSelection().anchorNode.parentNode.nodeName === 'STRIKE') {
         const linkURL = prompt('Enter a URL:', 'http://');
