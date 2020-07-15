@@ -1,7 +1,7 @@
 /*::selection {color: #fff; background: #383838;}*/
-::-webkit-scrollbar {width: 10px; background-color: #f8f6f8;}
-::-webkit-scrollbar-track {background-color: transparent!important;}
-::-webkit-scrollbar-track-piece {background-color: transparent!important;}
+::-webkit-scrollbar {width: 10px; background-color: #f3f3f3;}
+::-webkit-scrollbar-track {background-color: #f3f3f3!important;}
+::-webkit-scrollbar-track-piece {background-color: #f3f3f3!important;}
 ::-webkit-scrollbar-thumb {border-radius: 10px; background-color: #dbdbdb;}
 
 html, body {margin: 0; width: 500px; height: 500px; overflow: hidden; /*background-color: #35363a;*/ font-family: Sen, Arial, sans-serif;}
@@ -17,13 +17,13 @@ ul, ol {padding-left: 26px; margin: 6px 0 0;}
 /*#toolsWrap #fontSize.show {pointer-events: none;}*/
 /*#toolsWrap #fontSize.show input {display: inline-block; pointer-events: all}*/
 
-#note {height: calc(500px - 115px); width: calc(500px - 30px); overflow-y: scroll; padding: 55px 15px 15px; font-size: 14px;}
+#note {height: calc(500px - 71px); width: calc(500px - 30px); overflow-y: scroll; padding: 15px 15px 15px; font-size: 14px; margin-top: 40px}
 #note:focus {outline: none;}
 #note a {pointer: cursor!important;}
 
-#taskbar {position: absolute; bottom: 0; left: 0; width: calc(100% - 20px); padding: 20px 0; font-size: 12px; color: #ccc; display: flex; justify-content: space-between; align-items: center}
-#taskbar:before {content: ''; pointer-events: none; position: absolute; margin: auto; right: 0; left: 0; bottom: 0; height: 50px; width: 500px; background-color: #f3f3f3; z-index: 1; box-shadow: 0px -5px 19px 13px #f3f3f3;}
-#taskbar #status {opacity: 0; z-index: 2; color: #999; padding: 4px 10px; border-radius: 4px; background-color: #f3f3f3; margin-left: 10px;}
-#taskbar #status.show {opacity: 1}
+#taskbar {position: absolute; bottom: 10px; right: 15px; padding: 10px; font-size: 12px; color: #ccc; background-color: #f3f3f3; border-radius: 4px; display: flex; align-items: center}
+/*#taskbar:before {content: ''; pointer-events: none; position: absolute; right: -10px; bottom: 10px; height: 70px; width: 200px; background-color: #f3f3f3; z-index: 1; box-shadow: -10px -10px 20px 30px #f3f3f3; transform: rotate(-26deg); transform-origin: 100% 0%;}*/
+#taskbar #status {display: none; z-index: 2; color: #999; margin-right: 10px; border-radius: 4px; background-color: #f3f3f3; }
+#taskbar #status.show {display: inline-block;}
 #taskbar #export {color: #383838; z-index: 2; cursor: pointer; border: 1px solid #ddd; padding: 4px 10px; border-radius: 4px; background-color: #f3f3f3}
 #taskbar #export:hover {border-color: #999}
