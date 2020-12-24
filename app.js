@@ -10,6 +10,7 @@ const ol = document.querySelector('#ol')
 const ul = document.querySelector('#ul')
 const indent = document.querySelector('#indent')
 const outdent = document.querySelector('#outdent')
+const code = document.querySelector('#code')
 const link = document.querySelector('#link')
 
 const config = {attributes: true, childList: true, characterData: true, subtree: true}
@@ -91,8 +92,8 @@ underline.addEventListener('click', () => document.execCommand('underline'))
 strikethrough.addEventListener('click', () => document.execCommand('strikethrough'))
 ol.addEventListener('click', () => document.execCommand('insertOrderedList'))
 ul.addEventListener('click', () => document.execCommand('insertUnorderedList'))
-indent.addEventListener('click', () => document.execCommand("indent", true, null))
-outdent.addEventListener('click', () => document.execCommand("outdent", true, null))
+indent.addEventListener('click', () => document.execCommand('indent'))
+outdent.addEventListener('click', () => document.execCommand('outdent'))
 link.addEventListener('click', addLink)
 
 // export content
